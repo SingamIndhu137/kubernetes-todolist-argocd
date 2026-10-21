@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: todo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: singamindhu137/k8app-backend:1.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: PROJECT_NAME
+              value: TodoList
+            - name: POSTGRES_SERVER
+              value: postgres
+            - name: POSTGRES_USER
+              value: todo_user
+            - name: POSTGRES_DB
+              value: todo_db
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-secret
+                  key: POSTGRES_PASSWORD
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: todo-db-secret
+                  key: SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: todo-app
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 80
+      targetPort: 80

@@ -9,7 +9,7 @@ console.log(base_url)
 if (!(base_url.endsWith("/"))){
     base_url = base_url + "/";
 }
-if (!base_url.startsWith('http')){
+if (!base_url.startsWith('http') && !base_url.startsWith('/')){
     base_url = window.location.protocol + "//" + base_url
 }
 console.log("Backend API URI: ")

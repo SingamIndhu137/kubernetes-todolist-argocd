@@ -4,9 +4,9 @@ WORKDIR /app
 COPY package.json .
 COPY package-lock.json .
 #COPY yarn.lock .
-RUN yarn
+RUN npm ci
 COPY . .
-RUN yarn build
+RUN npm run build
 
 # => Run container
 FROM amd64/nginx:1.15.2-alpine
@@ -24,7 +24,6 @@ EXPOSE 80
 # Copy .env file and shell script to container
 WORKDIR /usr/share/nginx/html
 COPY ./env.sh .
-COPY .env .
 
 # Add bash
 RUN apk add --no-cache bash
@@ -39,4 +38,4 @@ ARG BUILDPLATFORM
 RUN echo "Build platform architecture is $BUILDPLATFORM, while target architecture is $TARGETPLATFORM" > /log
 
 # Start Nginx server
-CMD ["bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
+CMD ["sh", "/usr/share/nginx/html/env.sh"]
